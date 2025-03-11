@@ -6,7 +6,7 @@
 
     <groupId>com.btr</groupId>
     <artifactId>pdfvole</artifactId>
-    <version>20210711</version>
+    <version>LS</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
