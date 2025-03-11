@@ -156,7 +156,7 @@ public class PdfVole extends SingleFrameApplication implements
 		JSplitPane mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, 
 				new JScrollPane(this.pdfTree), this.nodeContentPanel);
 		mainSplitPane.setMinimumSize(new Dimension(150, 100));
-		mainSplitPane.setDividerLocation(200);
+		mainSplitPane.setDividerLocation(440);
 		
 		
 		// Build tabbed pane
@@ -203,7 +203,7 @@ public class PdfVole extends SingleFrameApplication implements
 	 * configureTopLevel
 	 ************************************************************************/
 	protected void configureTopLevel(JFrame mainFrame) {
-		var dim = new Dimension(900, 640);
+		var dim = new Dimension(1440, 900);
 		mainFrame.setPreferredSize(dim);
 		mainFrame.setSize(dim);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
