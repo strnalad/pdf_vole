@@ -137,6 +137,8 @@ public class StreamViewer extends JPanel implements ActionListener {
 		
 		setHeader(sb.toString());
 		
+		setViewer(5);
+		this.cmbMode.setSelectedIndex(5);
 		this.currentViewer.setData(data);		
 	}
 
@@ -147,8 +149,11 @@ public class StreamViewer extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		this.dataAreaPanel.removeAll();
+		setViewer(this.cmbMode.getSelectedIndex());
+	}
+
+	private void setViewer(int index) {
 		try {
-			int index = this.cmbMode.getSelectedIndex();
 			Class<?> viewerClass = (Class<?>) VIEWER[index][1];
 		
 			this.currentViewer = (IStreamViewer) viewerClass.newInstance();
@@ -162,5 +167,4 @@ public class StreamViewer extends JPanel implements ActionListener {
 			throw new RuntimeException(e1);
 		}
 	}
-
 }
