@@ -138,7 +138,6 @@ public class StreamViewer extends JPanel implements ActionListener {
 		setHeader(sb.toString());
 		
 		setViewer(5);
-		this.cmbMode.setSelectedIndex(5);
 		this.currentViewer.setData(data);		
 	}
 
@@ -161,10 +160,16 @@ public class StreamViewer extends JPanel implements ActionListener {
 			
 			this.dataAreaPanel.add((Component)this.currentViewer, BorderLayout.CENTER);
 			this.dataAreaPanel.revalidate();
+			this.cmbMode.setSelectedIndex(index);
 		} catch (InstantiationException e1) {
 			throw new RuntimeException(e1);
 		} catch (IllegalAccessException e1) {
 			throw new RuntimeException(e1);
+		} catch (RuntimeException e1) {
+			if(index == 0)
+				throw e1;
+			else
+				setViewer(index - 1);
 		}
 	}
 }
