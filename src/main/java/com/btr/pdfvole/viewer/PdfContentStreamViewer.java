@@ -139,7 +139,7 @@ public class PdfContentStreamViewer extends JPanel implements IStreamViewer {
 						// Last one is operator.
 						String opName = cmdParts.get(cmdParts.size()-1).toString().trim();
 						
-						if ("Q".equals(opName)) { //$NON-NLS-1$
+						if (opName.endsWith("EMC") || opName.endsWith("ET")) { //$NON-NLS-1$
 							indent--;
 						}
 						
@@ -152,7 +152,7 @@ public class PdfContentStreamViewer extends JPanel implements IStreamViewer {
 							opLine.append(op.toString());
 						}
 
-						if ("q".equals(opName)) { //$NON-NLS-1$
+						if (opName.endsWith("BMC") || opName.endsWith("BDC") || opName.endsWith("BT")) { //$NON-NLS-1$
 							indent++;
 						}
 						row[0] = opLine.toString(); 
