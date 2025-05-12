@@ -245,29 +245,69 @@ public class PdfVole extends SingleFrameApplication implements
 	
 	public void setNewModel(TreeModel newModel) {
 		PdfVole.this.pdfTree.setModel(newModel);
+		expandNodesOfNewModel();
+	}
+
+	/*************************************************************************
+	 * Expands several nodes of a new TreeModel (quality of life improvement)
+	 ************************************************************************/
+
+	private TreePath path;
+
+	private void expandNodesOfNewModel() {
+		//expand PDF tree root object
 		TreeModel model = PdfVole.this.pdfTree.getModel();
 		Object treeRoot = model.getRoot();
-		TreePath path = new TreePath(treeRoot);
+		path = new TreePath(treeRoot);
 
-		Object document = model.getChild(model.getRoot(), 0);
-		path = path.pathByAddingChild(document);
+		Object document = sinkFirst(model, model.getRoot());
+		Object trailer = sinkFirst(model, document);
 
-		Object trailer = model.getChild(document, 0);
-		path = path.pathByAddingChild(trailer);
-
-		Object root = null;
-		for (int i=0; i<model.getChildCount(trailer); ++i) {
-			if(model.getChild(trailer, i).toString().equals("Root"))
-				root = model.getChild(trailer, i);
-		}
+		Object root = findChild(model, trailer, "Root");
 		if(root == null) {
 			PdfVole.this.pdfTree.expandPath(path);
 			return;
 		}
 		path = path.pathByAddingChild(root);
 		PdfVole.this.pdfTree.expandPath(path);
-		path = path.pathByAddingChild(model.getChild(root, 0));
+
+		Object rootObject = sinkFirst(model, root);
+
+		//expand first page inside pages
+		Object pages = findChild(model, rootObject, "Pages");
+		if(pages != null){
+			path = path.pathByAddingChild(pages);
+			PdfVole.this.pdfTree.expandPath(path);
+			TreePath pagesPath = path;
+
+			Object pagesObject = sinkFirst(model, pages);
+			Object kids = findChild(model, pagesObject, "Kids");
+			if(kids != null){
+				path = path.pathByAddingChild(kids);
+				PdfVole.this.pdfTree.expandPath(path);
+				Object firstKid = sinkFirst(model, kids);
+				sinkFirst(model, firstKid);
+			}
+			PdfVole.this.pdfTree.collapsePath(pagesPath);
+		}
+	}
+
+	private Object findChild(TreeModel model, Object parent, String childName){
+		Object result = null;
+		for (int i=0; i<model.getChildCount(parent); ++i) {
+			if(model.getChild(parent, i).toString().contains(childName))
+				result = model.getChild(parent, i);
+		}
+		return result;
+	}
+
+	private Object sinkFirst(TreeModel model, Object parent){
+		if(parent == null || model.getChildCount(parent) == 0)
+			return null;
+		Object child = model.getChild(parent, 0);
+		path = path.pathByAddingChild(child);
 		PdfVole.this.pdfTree.expandPath(path);
+		return child;
 	}
 
 	/*************************************************************************
