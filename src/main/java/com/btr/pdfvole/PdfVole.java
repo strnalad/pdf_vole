@@ -245,8 +245,29 @@ public class PdfVole extends SingleFrameApplication implements
 	
 	public void setNewModel(TreeModel newModel) {
 		PdfVole.this.pdfTree.setModel(newModel);
-		PdfVole.this.pdfTree.expandRow(0);
-		PdfVole.this.setViewer(new InitialViewer());
+		TreeModel model = PdfVole.this.pdfTree.getModel();
+		Object treeRoot = model.getRoot();
+		TreePath path = new TreePath(treeRoot);
+
+		Object document = model.getChild(model.getRoot(), 0);
+		path = path.pathByAddingChild(document);
+
+		Object trailer = model.getChild(document, 0);
+		path = path.pathByAddingChild(trailer);
+
+		Object root = null;
+		for (int i=0; i<model.getChildCount(trailer); ++i) {
+			if(model.getChild(trailer, i).toString().equals("Root"))
+				root = model.getChild(trailer, i);
+		}
+		if(root == null) {
+			PdfVole.this.pdfTree.expandPath(path);
+			return;
+		}
+		path = path.pathByAddingChild(root);
+		PdfVole.this.pdfTree.expandPath(path);
+		path = path.pathByAddingChild(model.getChild(root, 0));
+		PdfVole.this.pdfTree.expandPath(path);
 	}
 
 	/*************************************************************************
