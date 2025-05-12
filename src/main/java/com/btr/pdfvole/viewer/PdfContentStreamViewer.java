@@ -133,14 +133,22 @@ public class PdfContentStreamViewer extends JPanel implements IStreamViewer {
 					contentParser.parse(cmdParts);
 					
 					int indent = 0;
+					int beginMCCount = 0;
+					int endMCCount = 0;
 					while (!cmdParts.isEmpty()) {
 						Object[] row = new Object[2];
 						
 						// Last one is operator.
 						String opName = cmdParts.get(cmdParts.size()-1).toString().trim();
-						
-						if (opName.endsWith("EMC") || opName.endsWith("ET")) { //$NON-NLS-1$
+						String extraInfo = "";
+						if(opName.endsWith("ET")) {
 							indent--;
+						}
+
+						if (opName.endsWith("EMC")) { //$NON-NLS-1$
+							indent--;
+							extraInfo += "[" + Integer.toString(endMCCount) + "] ";
+							endMCCount++;
 						}
 						
 						StringBuilder opLine = new StringBuilder(); 
@@ -152,14 +160,20 @@ public class PdfContentStreamViewer extends JPanel implements IStreamViewer {
 							opLine.append(op.toString());
 						}
 
-						if (opName.endsWith("BMC") || opName.endsWith("BDC") || opName.endsWith("BT")) { //$NON-NLS-1$
+						if(opName.endsWith("BT")) {
 							indent++;
+						}
+
+						if (opName.endsWith("BMC") || opName.endsWith("BDC")) { //$NON-NLS-1$
+							indent++;
+							extraInfo += "[" + Integer.toString(beginMCCount) + "] ";
+							beginMCCount++;
 						}
 						row[0] = opLine.toString(); 
 						
 						OperatorDescription desc = OperatorDescription.get(opName);
 						if (desc != null) {
-							row[1] = desc.getDescription();
+							row[1] = extraInfo + desc.getDescription();
 						}
 						data.add(row);
 
