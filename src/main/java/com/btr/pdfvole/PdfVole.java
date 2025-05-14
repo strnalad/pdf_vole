@@ -259,6 +259,8 @@ public class PdfVole extends SingleFrameApplication implements
 		TreeModel model = PdfVole.this.pdfTree.getModel();
 		Object treeRoot = model.getRoot();
 		path = new TreePath(treeRoot);
+		PdfVole.this.pdfTree.clearSelection();
+		PdfVole.this.pdfTree.addSelectionRow(0);
 
 		Object document = sinkFirst(model, model.getRoot());
 		Object trailer = sinkFirst(model, document);
